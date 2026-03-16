@@ -1,45 +1,18 @@
 import React, { useEffect, useRef, useState } from "react";
+import usePagination from "../hooks/usePagination";
 
 const Pagination = ({ currentPage, setCurrentPage, totalPages }) => {
   const [pageInput, setPageInput] = useState("");
   const [showInput, setShowInput] = useState(false);
   const inputRef = useRef(null);
 
+  const pages = usePagination({currentPage, totalPages}); // custom hook 
+
   useEffect(() => {
     if (showInput) {
       inputRef.current.focus();
     }
   }, [showInput]);
-
-  // pagination algorithm
-  const getPages = () => {
-    const pages = [];
-    const window = 2;
-
-    const start = Math.max(2, currentPage - window); // c = 9; w = 2; (2, 9-2) = 7
-    const end = Math.min(totalPages - 1, currentPage + window); // t=20, c=9; (19-1, 9 + 2) = 11  s=7 8 c=9 10 11=end
-
-    pages.push(1); // first page always.
-
-    if (start > 2){
-        pages.push("...");
-    }
-
-    for (let i = start; i <= end; i++) {
-      pages.push(i);
-    }
-
-    if (end < totalPages - 1){
-        pages.push("...");
-    }
-
-    if (totalPages > 1) {
-        pages.push(totalPages);
-    }
-    return pages;
-  };
-
-  const pages = getPages();
 
   const handleJump = () => {
     const page = Number(pageInput);
