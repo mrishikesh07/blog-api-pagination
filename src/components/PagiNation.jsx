@@ -32,7 +32,7 @@ const PagiNation = ({currentPage, setCurrentPage, totalPages}) => {
         }
     }
   return (
-    <div>
+    <div className='pagination'>
         <button onClick={() => setCurrentPage(prev => prev - 1)}
             disabled={currentPage===1}
         >
@@ -61,8 +61,16 @@ const PagiNation = ({currentPage, setCurrentPage, totalPages}) => {
         </button>
         {
             showInput && (
-                <div>
+                <div style={{marginTop: "10px"}}>
                     <input
+                        style={{
+                            border: "none",
+                            margin: "4px",
+                            padding: "6px 12px",
+                            background:"#e0e0e0",
+                            color: "black",
+                            borderRadius: "4px",
+                        }}
                         ref={inputRef}
                         type='number'
                         placeholder='Page No'
