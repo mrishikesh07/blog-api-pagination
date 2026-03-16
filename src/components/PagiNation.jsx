@@ -1,9 +1,35 @@
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 const PagiNation = ({currentPage, setCurrentPage, totalPages}) => {
+    const[pageInput, setPageInput] = useState("");
+    const[showInput, setShowInput] = useState(false);
+    const inputRef = useRef(null);
+
+    useEffect(() => {
+        if(showInput){
+            inputRef.current.focus();
+        }
+    }, [showInput]);
+
     const pages = [];
-    for(let i=1; i<=totalPages; i++){
-        pages.push(i);
+    for(let i= 1; i<= totalPages; i++){
+        if(i === 1 || i === totalPages || (i>= currentPage-1 && i<= currentPage + 1)){
+            pages.push(i);
+        }else if((i === currentPage - 2 && currentPage > 3) || (i=== currentPage + 2 && currentPage < totalPages - 2) ){
+            pages.push("...");
+        }
+    }
+
+    const handleJump = () =>{
+        const page = Number(pageInput);
+        if(page <1 || page>totalPages){
+            alert(`Enter Page Number Between 1 - ${totalPages}`)
+        }
+        if(page>=1 && page<=totalPages){
+            setCurrentPage(page);
+            setShowInput(false);
+            setPageInput("");
+        }
     }
   return (
     <div>
@@ -13,10 +39,19 @@ const PagiNation = ({currentPage, setCurrentPage, totalPages}) => {
             Prev
         </button>
         {
-          pages.map((page) => (
-            <button onClick={() => setCurrentPage(page)}>
-                {page}
-            </button>
+          pages.map((page, index) => (
+            page === "..." ? (
+                <span onClick={() => setShowInput(true)}
+                    key={`dots-${index}`} style={{margin: "0 8px"}}
+                >...</span>
+            ) : (
+                <button
+                    className={currentPage === page ? "active" : ""}
+                    key={`page-${page}`} onClick={() => setCurrentPage(page)}
+                >
+                    {page}
+                </button>
+            )
           ))
         }
         <button onClick={() => setCurrentPage(prev => prev +1)}
@@ -24,6 +59,28 @@ const PagiNation = ({currentPage, setCurrentPage, totalPages}) => {
         >
             Next
         </button>
+        {
+            showInput && (
+                <div>
+                    <input
+                        ref={inputRef}
+                        type='number'
+                        placeholder='Page No'
+                        onKeyDown={(e) => {
+                            if(e.key === 'Enter'){
+                                handleJump();
+                            }
+                        }}
+                        onChange={e => setPageInput(e.target.value)}
+                    />
+                    <button
+                        onClick={handleJump}
+                    >
+                        Go
+                    </button>
+                </div>
+            )
+        }
     </div>
   )
 }
